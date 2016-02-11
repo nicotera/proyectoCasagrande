@@ -1,0 +1,67 @@
+CREATE TABLE libertya.m_mesas
+(
+  m_mesa_id integer NOT NULL,
+  ad_client_id integer NOT NULL,
+  ad_org_id integer NOT NULL,
+  isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
+  created timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  createdby integer NOT NULL,
+  updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  updatedby integer NOT NULL,
+  tipo character varying(3),
+  ubicacion character varying(255),
+  description character varying(2000),
+  CONSTRAINT m_mesas_key PRIMARY KEY (m_mesa_id),
+  CONSTRAINT adorg_mmesas FOREIGN KEY (ad_org_id)
+      REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+
+
+
+CREATE TABLE libertya.m_invitados
+(
+  m_invitado_id integer NOT NULL,
+  ad_client_id integer NOT NULL,
+  ad_org_id integer NOT NULL,
+  isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
+  created timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  createdby integer NOT NULL,
+  updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  updatedby integer NOT NULL,
+  nombre character varying(30),
+  vinculo character varying(10),
+  m_mesa_id integer,
+  observacion character varying(2000),
+  CONSTRAINT m_invitados_key PRIMARY KEY (m_invitado_id),
+  CONSTRAINT adclient_minvitados FOREIGN KEY (ad_client_id)
+      REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT minvitados_mmesas FOREIGN KEY (m_mesa_id)
+      REFERENCES libertya.m_mesas (m_mesa_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+
+
+CREATE TABLE libertya.m_tipo_Evento
+(
+  m_tipoEvento_id integer NOT NULL,
+  ad_client_id integer NOT NULL,
+  ad_org_id integer NOT NULL,
+  isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
+  created timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  createdby integer NOT NULL,
+  updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  updatedby integer NOT NULL,
+  nombre character varying(30),
+  CONSTRAINT m_tipo_Evento_key PRIMARY KEY (m_tipoEvento_id),
+  CONSTRAINT adclient_mtipoevento FOREIGN KEY (ad_client_id)
+      REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT adorg_mtipoevento FOREIGN KEY (ad_org_id)
+      REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+
+
+
