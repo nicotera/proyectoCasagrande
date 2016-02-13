@@ -396,11 +396,74 @@ CREATE TABLE libertya.ev_menu
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT adorg_evmenu FOREIGN KEY (ad_org_id)
       REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT evtipomenu_evmenu FOREIGN KEY (ev_tipomenu_id)
       REFERENCES libertya.ev_tipo_menu (ev_tipomenu_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT evevento_evmenu FOREIGN KEY (ev_evento_id)
       REFERENCES libertya.ev_evento (ev_evento_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+
+CREATE TABLE libertya.ev_evento
+(
+  ev_evento_id integer NOT NULL,
+  ad_client_id integer NOT NULL,
+  ad_org_id integer NOT NULL,
+  isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
+  created timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  createdby integer NOT NULL,
+  updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  updatedby integer NOT NULL,
+  ev_tipoevento_id integer NOT NULL,
+  datecontrato timestamp without time zone NOT NULL,
+  dateinicio timestamp without time zone NOT NULL,
+  datefin timestamp without time zone NOT NULL,
+  lugar character varying(60),
+  direction character varying(60),
+  cantidadinvitados integer DEFAULT 0,
+  cantmayores integer DEFAULT 0,
+  cantjovenes integer DEFAULT 0,
+  cantniños integer DEFAULT 0, 
+  entregainicial numeric(20,2),
+  saldopendiente numeric(20,2),
+  cantidaddescorche integer DEFAULT 0,
+  cantidadmesadulce integer DEFAULT 0,
+  cantidadbarra integer DEFAULT 0,
+  cantidadmesa integer DEFAULT 0,
+  usanromesa character varying(1),
+  usacentromesa character varying(1),
+  usamesaimperial character varying(1),
+  usamesaredonda character varying(1),
+  estilomesa character varying(60),
+  cantidadlugaresmesa integer DEFAULT 0,
+  cantidadsillas integer DEFAULT 0,
+  usaliving character varying(1),
+  tamañoliving character varying(60),
+  colormantel character varying(60),
+  colorservilleta character varying(60),
+  cantidadcaminos integer DEFAULT 0,
+  cantidadcubresillas integer DEFAULT 0,
+  tipotortacasamiento character varying(60),
+  nromesatorta integer,
+  aclaraciontortacasam character varying(255),
+  detalleextratortacasam character varying(255),
+  realizacivil character varying(1),
+  mesacivil character varying(60),
+  cantidadsillascivil integer DEFAULT 0,
+  cantidadsillastestigos integer DEFAULT 0,
+  manteleriacivil character varying(60),
+  caminocivil character varying(60),
+  ubicacioncivil character varying(60),
+  decoracionespecialcivil character varying(60),
+  CONSTRAINT ev_evento_key PRIMARY KEY (ev_evento_id),
+  CONSTRAINT adclient_evevento FOREIGN KEY (ad_client_id)
+      REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT adorg_evevento FOREIGN KEY (ad_org_id)
+      REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT evtipoevento_evevento FOREIGN KEY (ev_tipoevento_id)
+      REFERENCES libertya.ev_tipo_evento (ev_tipoevento_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 )
