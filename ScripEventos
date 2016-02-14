@@ -1,6 +1,5 @@
----------------------------------------------------
-CREATE TABLE ev_tipo_producto (
-    tipo_producto_id integer NOT NULL, 
+CREATE TABLE libertya.ev_tipo_evento (
+    ev_tipo_evento_id integer NOT NULL, 
     ad_client_id integer NOT NULL,
     ad_org_id integer NOT NULL,
     isactive character(1) DEFAULT 'Y'::bpchar NOT NULL,
@@ -8,53 +7,8 @@ CREATE TABLE ev_tipo_producto (
     createdby integer NOT NULL,
     updated timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
     updatedby integer NOT NULL,
-	nombre character varying(255) NOT NULL,
-	CONSTRAINT ev_tipo_producto_id_key PRIMARY KEY (tipo_producto_id)
-)
--- Creo que falta el CREATE INDEX
-
----------------------------------------------------
-CREATE TABLE ev_tipo_barra (
-    tipo_barra_id integer NOT NULL, 
-    ad_client_id integer NOT NULL,
-    ad_org_id integer NOT NULL,
-    isactive character(1) DEFAULT 'Y'::bpchar NOT NULL,
-    created timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
-    createdby integer NOT NULL,
-    updated timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
-    updatedby integer NOT NULL,
-	name character varying(255) NOT NULL,
-	CONSTRAINT ev_tipo_barra_id_key PRIMARY KEY (tipo_barra_id)
-)
--- Creo que falta el CREATE INDEX
-
----------------------------------------------------
-CREATE TABLE ev_tareas_personal_extra (
-    tareas_personal_extra_id integer NOT NULL, 
-    ad_client_id integer NOT NULL,
-    ad_org_id integer NOT NULL,
-    isactive character(1) DEFAULT 'Y'::bpchar NOT NULL,
-    created timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
-    createdby integer NOT NULL,
-    updated timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
-    updatedby integer NOT NULL,
-	name character varying(255) NOT NULL,
-	CONSTRAINT ev_tareas_personal_extra_id_key PRIMARY KEY (tareas_personal_extra_id)
-)
--- Creo que falta el CREATE INDEX
-
----------------------------------------------------
-CREATE TABLE ev_tipo_evento (
-    tipo_evento_id integer NOT NULL, 
-    ad_client_id integer NOT NULL,
-    ad_org_id integer NOT NULL,
-    isactive character(1) DEFAULT 'Y'::bpchar NOT NULL,
-    created timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
-    createdby integer NOT NULL,
-    updated timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
-    updatedby integer NOT NULL,
-	name character varying(255) NOT NULL,
-	CONSTRAINT ev_tipo_evento_id_key PRIMARY KEY (tipo_evento_id),
+    name character varying(255) NOT NULL,
+    CONSTRAINT ev_tipo_evento_key PRIMARY KEY (ev_tipo_evento_id),
     CONSTRAINT adclient_mtipoevento FOREIGN KEY (ad_client_id)
          REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
          ON UPDATE NO ACTION ON DELETE NO ACTION,
@@ -62,37 +16,163 @@ CREATE TABLE ev_tipo_evento (
          REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
          ON UPDATE NO ACTION ON DELETE NO ACTION
 )
--- Creo que falta el CREATE INDEX
 
 
----------------------------------------------------
-CREATE TABLE ev_producto_detalle (
-    producto_detalle_id integer NOT NULL, 
+CREATE TABLE libertya.ev_evento
+(
+  ev_evento_id integer NOT NULL,
+  ad_client_id integer NOT NULL,
+  ad_org_id integer NOT NULL,
+  isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
+  created timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  createdby integer NOT NULL,
+  updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  updatedby integer NOT NULL,
+  ev_tipo_evento_id integer NOT NULL,
+  datecontract timestamp without time zone,
+  dateinicio timestamp without time zone NOT NULL,
+  datefin timestamp without time zone NOT NULL,
+  lugar character varying(60),
+  direction character varying(60),
+  cantidadinvitados integer DEFAULT 0,
+  cantmayores integer DEFAULT 0,
+  cantjovenes integer DEFAULT 0,
+  cantninios integer DEFAULT 0, 
+  entregainicial numeric(20,2),
+  saldopendiente numeric(20,2),
+  cantidaddescorche integer DEFAULT 0,
+  cantidadmesadulce integer DEFAULT 0,
+  cantidadbarra integer DEFAULT 0,
+  cantidadmesa integer DEFAULT 0,
+  usanromesa character (1) NOT NULL DEFAULT 'N'::bpchar,
+  usacentromesa character (1) NOT NULL DEFAULT 'N'::bpchar,
+  usamesaimperial character (1) NOT NULL DEFAULT 'N'::bpchar,
+  usamesaredonda character (1) NOT NULL DEFAULT 'N'::bpchar,
+  estilomesa character varying(60),
+  cantidadlugaresmesa integer DEFAULT 0,
+  cantidadsillas integer DEFAULT 0,
+  usaliving character (1) NOT NULL DEFAULT 'N'::bpchar,
+  tamanioliving character varying(60),
+  colormantel character varying(60),
+  colorservilleta character varying(60),
+  cantidadcaminos integer DEFAULT 0,
+  cantidadcubresillas integer DEFAULT 0,
+  tipotortacasamiento character varying(60),
+  nromesatorta integer,
+  aclaraciontortacasam character varying(255),
+  detalleextratortacasam character varying(255),
+  realizacivil character (1) NOT NULL DEFAULT 'N'::bpchar,
+  mesacivil character varying(60),
+  cantidadsillascivil integer DEFAULT 0,
+  cantidadsillastestigos integer DEFAULT 0,
+  manteleriacivil character varying(60),
+  caminocivil character varying(60),
+  ubicacioncivil character varying(60),
+  decoracionespecialcivil character varying(60),
+  CONSTRAINT ev_evento_key PRIMARY KEY (ev_evento_id),
+  CONSTRAINT adclient_evevento FOREIGN KEY (ad_client_id)
+      REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT adorg_evevento FOREIGN KEY (ad_org_id)
+      REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT evtipoevento_evevento FOREIGN KEY (ev_tipo_evento_id)
+      REFERENCES libertya.ev_tipo_evento (ev_tipo_evento_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+
+
+CREATE TABLE libertya.ev_tipo_producto 
+(
+  ev_tipo_producto_id integer NOT NULL, 
+  ad_client_id integer NOT NULL,
+  ad_org_id integer NOT NULL,
+  isactive character(1) DEFAULT 'Y'::bpchar NOT NULL,
+  created timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
+  createdby integer NOT NULL,
+  updated timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
+  updatedby integer NOT NULL,
+	name character varying(255) NOT NULL,
+	CONSTRAINT ev_tipo_producto_key PRIMARY KEY (ev_tipo_producto_id)
+)
+
+
+CREATE TABLE libertya.ev_tipo_barra
+(
+  ev_tipo_barra_id integer NOT NULL, 
+  ad_client_id integer NOT NULL,
+  ad_org_id integer NOT NULL,
+  isactive character(1) DEFAULT 'Y'::bpchar NOT NULL,
+  created timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
+  createdby integer NOT NULL,
+  updated timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
+  updatedby integer NOT NULL,
+	name character varying(255) NOT NULL,
+	CONSTRAINT ev_tipo_barra_key PRIMARY KEY (ev_tipo_barra_id)
+)
+
+
+CREATE TABLE libertya.ev_tareas_personal_extra 
+(
+  ev_tareas_personal_extra_id integer NOT NULL, 
+  ad_client_id integer NOT NULL,
+  ad_org_id integer NOT NULL,
+  isactive character(1) DEFAULT 'Y'::bpchar NOT NULL,
+  created timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
+  createdby integer NOT NULL,
+  updated timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
+  updatedby integer NOT NULL,
+	name character varying(255) NOT NULL,
+	CONSTRAINT ev_tareas_personal_extra_key PRIMARY KEY (ev_tareas_personal_extra_id)
+)
+
+
+CREATE TABLE libertya.ev_producto_detalle 
+(
+  ev_producto_detalle_id integer NOT NULL, 
  -----ojo con la tabla Articulo    
-    articulo_id integer NOT NULL,
-	producto_id integer NOT NULL,
-    tipo_de_barra_id integer NOT NULL,
-	tipo_producto_id integer NOT NULL,
-    evento_id integer NOT NULL,	
-    ad_client_id integer NOT NULL,
-    ad_org_id integer NOT NULL,
-    isactive character(1) DEFAULT 'Y'::bpchar NOT NULL,
-    created timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
-    createdby integer NOT NULL,
-    updated timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
-    updatedby integer NOT NULL,
+  m_product_id integer NOT NULL,
+	ev_producto_id integer NOT NULL,
+  ev_tipo_de_barra_id integer NOT NULL,
+	ev_tipo_producto_id integer NOT NULL,
+  evento_id integer NOT NULL,	
+  ad_client_id integer NOT NULL,
+  ad_org_id integer NOT NULL,
+  isactive character(1) DEFAULT 'Y'::bpchar NOT NULL,
+  created timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
+  createdby integer NOT NULL,
+  updated timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
+  updatedby integer NOT NULL,
 	cantidad_inicial numeric(20,2) DEFAULT 0,
 	cantidad final numeric(20,2) DEFAULT 0,
-	CONSTRAINT ev_producto_detalle_key PRIMARY KEY (producto_detalle_id)
+	CONSTRAINT ev_producto_detalle_key PRIMARY KEY (ev_producto_detalle_id)
 )
--- Creo que falta el CREATE INDEX
-	
----------------------------------------------------
-CREATE TABLE ev_productos (
-    producto_id integer NOT NULL,
-    tipo_de_barra_id integer NOT NULL,
-    tipo_producto_id integer NOT NULL,
-    evento_id integer NOT NULL, 
+
+
+CREATE TABLE libertya.ev_productos 
+(
+  ev_producto_id integer NOT NULL,
+  ad_client_id integer NOT NULL,
+  ad_org_id integer NOT NULL,
+  isactive character(1) DEFAULT 'Y'::bpchar NOT NULL,
+  created timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
+  createdby integer NOT NULL,
+  updated timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
+  updatedby integer NOT NULL,
+  ev_tipo_de_barra_id integer NOT NULL,
+  ev_tipo_producto_id integer NOT NULL,
+  ev_evento_id integer NOT NULL, 
+  encargado character varying(255),
+  responsable character varying(255),
+  telefono character varying(16),
+  fecha_logistica numeric(20,2) DEFAULT 0,
+  CONSTRAINT ev_productos_key PRIMARY KEY (ev_producto_id)
+)
+
+
+CREATE TABLE libertya.ev_invitados 
+(
+    ev_invitado_id integer NOT NULL, 
     ad_client_id integer NOT NULL,
     ad_org_id integer NOT NULL,
     isactive character(1) DEFAULT 'Y'::bpchar NOT NULL,
@@ -100,56 +180,28 @@ CREATE TABLE ev_productos (
     createdby integer NOT NULL,
     updated timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
     updatedby integer NOT NULL,
-    encargado character varying(255),
-    responsable character varying(255),
-    telefono character varying(16),
-    fecha_logistica numeric(20,2) DEFAULT 0,
-    CONSTRAINT ev_producto_detalle_key PRIMARY KEY (producto_detalle_id)
-)
--- Creo que falta el CREATE INDEX
-
-
-
-
-
----------------------------------------------------
-CREATE TABLE ev_invitados (
-    invitado_id integer NOT NULL, 
-    evento_id integer NOT NULL,
-    producto_id integer NOT NULL,
-    tipo_de_barra_id integer NOT NULL,
-    tipo_producto_id integer NOT NULL,
+    ev_evento_id integer NOT NULL,
+    ev_producto_id integer NOT NULL,
+    ev_tipo_de_barra_id integer NOT NULL,
+    ev_tipo_producto_id integer NOT NULL,
     evento_id integer NOT NULL, 
-    ad_client_id integer NOT NULL,
-    ad_org_id integer NOT NULL,
-    isactive character(1) DEFAULT 'Y'::bpchar NOT NULL,
-    created timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
-    createdby integer NOT NULL,
-    updated timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
-    updatedby integer NOT NULL,
     name character varying(255) NOT NULL,
-    apellido character varying(255) NOT NULL,
     vinculo character varying(255) NOT NULL,
-    mesa_id integer NOT NULL, 
+    ev_mesa_id integer NOT NULL, 
     observacion character varying(255) NOT NULL,
-    CONSTRAINT ev_invitado_id_key PRIMARY KEY (invitado_id),
-    CONSTRAINT adclient_evinvitado FOREIGN KEY (ad_client_id)
+    CONSTRAINT ev_invitado_key PRIMARY KEY (ev_invitado_id),
+    CONSTRAINT adclient_evinvitados FOREIGN KEY (ad_client_id)
          REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
          ON UPDATE NO ACTION ON DELETE NO ACTION,
     CONSTRAINT adorg_evinvitado FOREIGN KEY (ad_org_id)
          REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
          ON UPDATE NO ACTION ON DELETE NO ACTION
 )	
--- Creo que falta el CREATE INDEX	
 
----------------------------------------------------
-CREATE TABLE ev_documentos (
-    documento_id integer NOT NULL, 
-    evento_id integer NOT NULL,
-    producto_id integer NOT NULL,
-    tipo_de_barra_id integer NOT NULL,
-    tipo_producto_id integer NOT NULL,
-    evento_id integer NOT NULL, 
+
+CREATE TABLE libertya.ev_documentos 
+(
+    ev_documento_id integer NOT NULL, 
     ad_client_id integer NOT NULL,
     ad_org_id integer NOT NULL,
     isactive character(1) DEFAULT 'Y'::bpchar NOT NULL,
@@ -157,9 +209,14 @@ CREATE TABLE ev_documentos (
     createdby integer NOT NULL,
     updated timestamp without time zone DEFAULT ('now'::text)::timestamp(6) with time zone NOT NULL,
     updatedby integer NOT NULL,
+    ev_evento_id integer NOT NULL,
+    ev_producto_id integer NOT NULL,
+    ev_tipo_de_barra_id integer NOT NULL,
+    ev_tipo_producto_id integer NOT NULL,
+    evento_id integer NOT NULL,
     name character varying(255) NOT NULL,
     binarydata bytea
-    CONSTRAINT ev_documento_id_key PRIMARY KEY (documento_id),
+    CONSTRAINT ev_documento_key PRIMARY KEY (ev_documento_id),
     CONSTRAINT adclient_ev_documentos FOREIGN KEY (ad_client_id)
          REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
          ON UPDATE NO ACTION ON DELETE NO ACTION,
@@ -167,9 +224,7 @@ CREATE TABLE ev_documentos (
          REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
          ON UPDATE NO ACTION ON DELETE NO ACTION
 )   
--- Creo que falta el CREATE INDEX   
 
----------------------------------------------------------------------------------------------
 
 CREATE TABLE libertya.ev_mesas
 (
@@ -181,11 +236,18 @@ CREATE TABLE libertya.ev_mesas
   createdby integer NOT NULL,
   updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
   updatedby integer NOT NULL,
+  ev_evento_id integer NOT NULL,
   type character varying(3),
   ubication character varying(255),
   description character varying(255),
-  CONSTRAINT m_mesas_key PRIMARY KEY (ev_mesa_id),
-  CONSTRAINT adorg_mmesas FOREIGN KEY (ad_org_id)
+  CONSTRAINT ev_mesas_key PRIMARY KEY (ev_mesa_id),
+  CONSTRAINT evevento_evmesas FOREIGN KEY (ev_evento_id)
+      REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT adclient_evmesas FOREIGN KEY (ad_client_id)
+      REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,    
+  CONSTRAINT adorg_evmesas FOREIGN KEY (ad_org_id)
       REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 )
@@ -193,7 +255,7 @@ CREATE TABLE libertya.ev_mesas
 
   CREATE TABLE libertya.ev_timing
 (
-  ev_timingevento_id integer NOT NULL,
+  ev_timing_id integer NOT NULL,
   ad_client_id integer NOT NULL,
   ad_org_id integer NOT NULL,
   isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
@@ -201,13 +263,12 @@ CREATE TABLE libertya.ev_mesas
   createdby integer NOT NULL,
   updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
   updatedby integer NOT NULL,
-  ev_timing_id integer NOT NULL,
   ev_evento_id integer NOT NULL,
   datetiming timestamp without time zone NOT NULL,
   description character varying(255),
-  CONSTRAINT ev_timingevento_key PRIMARY KEY (ev_timingevento_id),
-  CONSTRAINT ev_evento_id FOREIGN KEY (ev_evento_id)
-      REFERENCES libertya.ev_evento_id (ev_evento_id) MATCH SIMPLE
+  CONSTRAINT ev_timing_key PRIMARY KEY (ev_timing_id),
+  CONSTRAINT evevento_evtiming FOREIGN KEY (ev_evento_id)
+      REFERENCES libertya.ev_evento (ev_evento_id) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT adclient_evtiming FOREIGN KEY (ad_client_id)
       REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
@@ -217,11 +278,114 @@ CREATE TABLE libertya.ev_mesas
       ON UPDATE NO ACTION ON DELETE NO ACTION
 )
 
-CREATE INDEX ev_timing
-  ON libertya.ev_timing
-  USING btree
-  (ev_timing_id, ev_evento_id);
 
+CREATE TABLE libertya.ev_inflacion
+(
+  ev_inflacion_id integer NOT NULL,
+  ad_client_id integer NOT NULL,
+  ad_org_id integer NOT NULL,
+  isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
+  created timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  createdby integer NOT NULL,
+  updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  updatedby integer NOT NULL,
+  anio integer NOT NULL,
+  mes integer NOT NULL,
+  name character varying(60),
+  porcentaje numeric(24,6) DEFAULT 0,
+  CONSTRAINT ev_inflacion_key PRIMARY KEY (ev_inflacion_id),
+  CONSTRAINT adclient_evinflacion FOREIGN KEY (ad_client_id)
+      REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT adorg_evinflacion FOREIGN KEY (ad_org_id)
+      REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+
+CREATE TABLE libertya.ev_plan_pagos ---No se si está bien resuelto la parte de año mes
+(
+  ev_planpago_id integer NOT NULL,
+  ad_client_id integer NOT NULL,
+  ad_org_id integer NOT NULL,
+  isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
+  created timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  createdby integer NOT NULL,
+  updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  updatedby integer NOT NULL,
+  cuotanro integer NOT NULL,
+  ev_evento_id integer NOT NULL,
+  date timestamp without time zone NOT NULL,
+  amount numeric(20,2) DEFAULT 0,
+  amountotal numeric(20,2) DEFAULT 0,
+  inflacionacum numeric(20,2) DEFAULT 0,
+  valueactualizado numeric(20,2) DEFAULT 0,
+  valuepagado numeric(20,2) DEFAULT 0,
+  datepago timestamp without time zone NOT NULL,
+  ev_inflacion_id integer NOT NULL,,
+  CONSTRAINT ev_plan_pagos_key PRIMARY KEY (ev_planpago_id),
+  CONSTRAINT adclient_evplanpagos FOREIGN KEY (ad_client_id)
+      REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT adorg_evplanpagos FOREIGN KEY (ad_org_id)
+      REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+  CONSTRAINT evinflacion_evplanpagos FOREIGN KEY (ev_inflacion_id)
+      REFERENCES libertya.ev_inflacion (ev_inflacion_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+
+CREATE TABLE libertya.ev_tipo_menu
+(
+  ev_tipomenu_id integer NOT NULL,
+  ad_client_id integer NOT NULL,
+  ad_org_id integer NOT NULL,
+  isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
+  created timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  createdby integer NOT NULL,
+  updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  updatedby integer NOT NULL,
+  name character varying(60),
+  CONSTRAINT ev_tipo_menu_key PRIMARY KEY (ev_tipomenu_id),
+  CONSTRAINT adclient_evtipomenu FOREIGN KEY (ad_client_id)
+      REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT adorg_evtipomenu FOREIGN KEY (ad_org_id)
+      REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+
+CREATE TABLE libertya.ev_menu
+(
+  ev_menu_id integer NOT NULL,
+  ad_client_id integer NOT NULL,
+  ad_org_id integer NOT NULL,
+  isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
+  created timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  createdby integer NOT NULL,
+  updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  updatedby integer NOT NULL,
+  ev_tipomenu_id integer NOT NULL,
+  ev_evento_id integer NOT NULL,
+  qty integer DEFAULT 0, 
+  price numeric(20,2),
+  CONSTRAINT ev_menu_key PRIMARY KEY (ev_menu_id),
+  CONSTRAINT adclient_evmenu FOREIGN KEY (ad_client_id)
+      REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT adorg_evmenu FOREIGN KEY (ad_org_id)
+      REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT evtipomenu_evmenu FOREIGN KEY (ev_tipomenu_id)
+      REFERENCES libertya.ev_tipo_menu (ev_tipomenu_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT evevento_evmenu FOREIGN KEY (ev_evento_id)
+      REFERENCES libertya.ev_evento (ev_evento_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+
+
+
+=======================================================================================================Ver de usar la gestion empleados para esto que está entre las rayas dobles
 
 CREATE TABLE libertya.ev_rol
 (
@@ -256,7 +420,7 @@ CREATE TABLE libertya.ev_rol_precios
   updatedby integer NOT NULL,
   ev_rol_id integer NOT NULL,
   datevigencia timestamp without time zone NOT NULL,
-  valueTime numeric(20,2) DEFAULT 0, 
+  pricetime numeric(20,2) DEFAULT 0, 
   CONSTRAINT ev_rolprecios_key PRIMARY KEY (ev_rolprecios_id),
   CONSTRAINT evrol_evrolprecios FOREIGN KEY (ev_rol_id)
       REFERENCES libertya.ev_rol (ev_rol_id) MATCH SIMPLE
@@ -266,7 +430,7 @@ CREATE TABLE libertya.ev_rol_precios
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT adorg_evrolprecios FOREIGN KEY (ad_org_id)
       REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
+      ON UPDATE NO ACTION ON DELETE NO ACTION 
 )
 
 
@@ -303,167 +467,5 @@ CREATE TABLE libertya.ev_personal
 )
 
 
-CREATE TABLE libertya.ev_inflacion
-(
-  ev_inflacion_id integer NOT NULL,
-  ad_client_id integer NOT NULL,
-  ad_org_id integer NOT NULL,
-  isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
-  created timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-  createdby integer NOT NULL,
-  updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-  updatedby integer NOT NULL,
-  año integer NOT NULL,
-  mes integer NOT NULL,
-  name character varying(60),
-  porcentaje integer DEFAULT 0, 
-  CONSTRAINT ev_inflacion_key PRIMARY KEY (ev_inflacion_id),
-  CONSTRAINT adclient_evinflacion FOREIGN KEY (ad_client_id)
-      REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT adorg_evinflacion FOREIGN KEY (ad_org_id)
-      REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
-)
 
-CREATE TABLE libertya.ev_plan_pagos
-(
-  ev_planpago_id integer NOT NULL,
-  ad_client_id integer NOT NULL,
-  ad_org_id integer NOT NULL,
-  isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
-  created timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-  createdby integer NOT NULL,
-  updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-  updatedby integer NOT NULL,
-  cuotanro integer NOT NULL,
-  ev_evento_id integer NOT NULL,
-  date timestamp without time zone NOT NULL,
-  value numeric(20,2) DEFAULT 0,
-  valuetotal numeric(20,2) DEFAULT 0,
-  inflacionacum numeric(20,2) DEFAULT 0,
-  valueactualizado numeric(20,2) DEFAULT 0,
-  valuepagado numeric(20,2) DEFAULT 0,
-  datepago timestamp without time zone NOT NULL,
-  año integer NOT NULL,
-  mes integer NOT NULL,
-  CONSTRAINT ev_plan_pagos_key PRIMARY KEY (ev_planpago_id),
-  CONSTRAINT adclient_evplanpagos FOREIGN KEY (ad_client_id)
-      REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT adorg_evplanpagos FOREIGN KEY (ad_org_id)
-      REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
-)
-
-CREATE TABLE libertya.ev_tipo_menu
-(
-  ev_tipomenu_id integer NOT NULL,
-  ad_client_id integer NOT NULL,
-  ad_org_id integer NOT NULL,
-  isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
-  created timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-  createdby integer NOT NULL,
-  updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-  updatedby integer NOT NULL,
-  name character varying(60),
-  CONSTRAINT ev_tipo_menu_key PRIMARY KEY (ev_tipomenu_id),
-  CONSTRAINT adclient_evtipomenu FOREIGN KEY (ad_client_id)
-      REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT adorg_evtipomenu FOREIGN KEY (ad_org_id)
-      REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
-)
-
-CREATE TABLE libertya.ev_menu
-(
-  ev_menu_id integer NOT NULL,
-  ad_client_id integer NOT NULL,
-  ad_org_id integer NOT NULL,
-  isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
-  created timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-  createdby integer NOT NULL,
-  updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-  updatedby integer NOT NULL,
-  ev_tipomenu_id integer NOT NULL,
-  ev_evento_id integer NOT NULL,
-  cantidad integer DEFAULT 0, 
-  value numeric(20,2),
-  CONSTRAINT ev_menu_key PRIMARY KEY (ev_menu_id),
-  CONSTRAINT adclient_evmenu FOREIGN KEY (ad_client_id)
-      REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT adorg_evmenu FOREIGN KEY (ad_org_id)
-      REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT evtipomenu_evmenu FOREIGN KEY (ev_tipomenu_id)
-      REFERENCES libertya.ev_tipo_menu (ev_tipomenu_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT evevento_evmenu FOREIGN KEY (ev_evento_id)
-      REFERENCES libertya.ev_evento (ev_evento_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
-)
-
-CREATE TABLE libertya.ev_evento
-(
-  ev_evento_id integer NOT NULL,
-  ad_client_id integer NOT NULL,
-  ad_org_id integer NOT NULL,
-  isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
-  created timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-  createdby integer NOT NULL,
-  updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
-  updatedby integer NOT NULL,
-  ev_tipoevento_id integer NOT NULL,
-  datecontrato timestamp without time zone NOT NULL,
-  dateinicio timestamp without time zone NOT NULL,
-  datefin timestamp without time zone NOT NULL,
-  lugar character varying(60),
-  direction character varying(60),
-  cantidadinvitados integer DEFAULT 0,
-  cantmayores integer DEFAULT 0,
-  cantjovenes integer DEFAULT 0,
-  cantniños integer DEFAULT 0, 
-  entregainicial numeric(20,2),
-  saldopendiente numeric(20,2),
-  cantidaddescorche integer DEFAULT 0,
-  cantidadmesadulce integer DEFAULT 0,
-  cantidadbarra integer DEFAULT 0,
-  cantidadmesa integer DEFAULT 0,
-  usanromesa character varying(1),
-  usacentromesa character varying(1),
-  usamesaimperial character varying(1),
-  usamesaredonda character varying(1),
-  estilomesa character varying(60),
-  cantidadlugaresmesa integer DEFAULT 0,
-  cantidadsillas integer DEFAULT 0,
-  usaliving character varying(1),
-  tamañoliving character varying(60),
-  colormantel character varying(60),
-  colorservilleta character varying(60),
-  cantidadcaminos integer DEFAULT 0,
-  cantidadcubresillas integer DEFAULT 0,
-  tipotortacasamiento character varying(60),
-  nromesatorta integer,
-  aclaraciontortacasam character varying(255),
-  detalleextratortacasam character varying(255),
-  realizacivil character varying(1),
-  mesacivil character varying(60),
-  cantidadsillascivil integer DEFAULT 0,
-  cantidadsillastestigos integer DEFAULT 0,
-  manteleriacivil character varying(60),
-  caminocivil character varying(60),
-  ubicacioncivil character varying(60),
-  decoracionespecialcivil character varying(60),
-  CONSTRAINT ev_evento_key PRIMARY KEY (ev_evento_id),
-  CONSTRAINT adclient_evevento FOREIGN KEY (ad_client_id)
-      REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT adorg_evevento FOREIGN KEY (ad_org_id)
-      REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT evtipoevento_evevento FOREIGN KEY (ev_tipoevento_id)
-      REFERENCES libertya.ev_tipo_evento (ev_tipoevento_id) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION
-)
+================================================================================================================
