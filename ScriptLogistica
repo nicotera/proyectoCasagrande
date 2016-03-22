@@ -1,0 +1,176 @@
+CREATE TABLE libertya.lo_orden_logistica
+(
+  lo_orden_logistica_id integer NOT NULL,
+  ad_client_id integer NOT NULL,
+  ad_org_id integer NOT NULL,
+  isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
+  created timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  createdby integer NOT NULL,
+  updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  updatedby integer NOT NULL,
+  ev_evento_id integer NOT NULL,
+  horaComienzoLog timestamp without time zone NOT NULL,
+  CONSTRAINT lo_orden_logistica_key PRIMARY KEY (lo_orden_logistica_id),
+  CONSTRAINT adclient_loordenlogistica FOREIGN KEY (ad_client_id)
+      REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT adorg_loordenlogistica FOREIGN KEY (ad_org_id)
+      REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT evevento_loordenlogistica FOREIGN KEY (ev_evento_id)
+      REFERENCES libertya.ev_evento (ev_evento_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+ALTER TABLE libertya.lo_orden_logistica OWNER TO libertya;
+
+
+CREATE TABLE libertya.lo_envio
+(
+  lo_envio_id integer NOT NULL,
+  ad_client_id integer NOT NULL,
+  ad_org_id integer NOT NULL,
+  isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
+  created timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  createdby integer NOT NULL,
+  updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  updatedby integer NOT NULL,
+  lo_orden_logistica_id integer NOT NULL,
+  nroevio integer NOT NULL,
+  tipoenvio integer NOT NULL,
+  fechaenvio timestamp without time zone,
+  horaenvio timestamp without time zone NOT NULL,
+  origen character (10),
+  destino character (10),
+  --Transportista
+  c_bpartner_id integer NOT NULL,
+  CONSTRAINT lo_envio_key PRIMARY KEY (lo_envio_id),
+  CONSTRAINT adclient_loenvio FOREIGN KEY (ad_client_id)
+      REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT adorg_loenvio FOREIGN KEY (ad_org_id)
+      REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT loordenlogistica_loenvio FOREIGN KEY (lo_orden_logistica_id)
+      REFERENCES libertya.lo_orden_logistica (lo_orden_logistica_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT lorecepcion_cbpartner FOREIGN KEY (c_bpartner_id)
+      REFERENCES libertya.c_bpartner (c_bpartner_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+ALTER TABLE libertya.lo_envio OWNER TO libertya;
+
+
+CREATE TABLE libertya.lo_envio_articulos
+(
+  lo_envio_articulos_id integer NOT NULL,
+  ad_client_id integer NOT NULL,
+  ad_org_id integer NOT NULL,
+  isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
+  created timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  createdby integer NOT NULL,
+  updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  updatedby integer NOT NULL,
+  lo_envio_id integer NOT NULL,
+  m_product_id integer NOT NULL,
+  lote character(10),
+  cantidad numeric(20,2) DEFAULT 0,
+  CONSTRAINT lo_envio_articulos_key PRIMARY KEY (lo_envio_articulos_id),
+  CONSTRAINT adclient_loenvioarticulos FOREIGN KEY (ad_client_id)
+      REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT adorg_loenvioarticulos FOREIGN KEY (ad_org_id)
+      REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT loenvioarticulos_mproduct FOREIGN KEY (m_product_id)
+      REFERENCES libertya.m_product (m_product_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+ALTER TABLE libertya.lo_envio_articulos OWNER TO libertya;
+
+CREATE TABLE libertya.lo_recepcion
+(
+  lo_recepcion_id integer NOT NULL,
+  ad_client_id integer NOT NULL,
+  ad_org_id integer NOT NULL,
+  isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
+  created timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  createdby integer NOT NULL,
+  updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  updatedby integer NOT NULL,
+  lo_envio_id integer NOT NULL,
+  nrorecepcion integer NOT NULL,
+  observacion character(200),
+  fecharecepcion timestamp without time zone,
+  horarecepcion timestamp without time zone NOT NULL,
+  origen character (10),
+  destino character (10),
+   --Transportista -- Por lo que pude ver libertya lo trata como una entidad comercial.
+  c_bpartner_id integer NOT NULL,
+  CONSTRAINT lo_recepcion_key PRIMARY KEY (lo_recepcion_id),
+  CONSTRAINT adclient_lorecepcion FOREIGN KEY (ad_client_id)
+      REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT adorg_lorecepcion FOREIGN KEY (ad_org_id)
+      REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT lorecepcion_cbpartner FOREIGN KEY (c_bpartner_id)
+      REFERENCES libertya.c_bpartner (c_bpartner_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+ALTER TABLE libertya.lo_recepcion OWNER TO libertya;
+
+
+CREATE TABLE libertya.lo_recepcion_articulos
+(
+  lo_recepcion_articulos_id integer NOT NULL,
+  ad_client_id integer NOT NULL,
+  ad_org_id integer NOT NULL,
+  isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
+  created timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  createdby integer NOT NULL,
+  updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  updatedby integer NOT NULL,
+  lo_envio_id integer NOT NULL,
+  m_product_id integer NOT NULL,
+  lote character(10),
+  cantidadrecibida numeric(20,2) DEFAULT 0,
+  CONSTRAINT lo_recepcion_articulos_key PRIMARY KEY (lo_recepcion_articulos_id),
+  CONSTRAINT adclient_lorecepcionarticulos FOREIGN KEY (ad_client_id)
+      REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT adorg_lorecepcionarticulos FOREIGN KEY (ad_org_id)
+      REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT lorecepcionarticulos_mproduct FOREIGN KEY (m_product_id)
+      REFERENCES libertya.m_product (m_product_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+);
+ALTER TABLE libertya.lo_recepcion_articulos OWNER TO libertya;
+
+CREATE TABLE libertya.lo_personal_logistica
+(
+  lo_personal_logistica_id integer NOT NULL,
+  ad_client_id integer NOT NULL,
+  ad_org_id integer NOT NULL,
+  isactive character(1) NOT NULL DEFAULT 'Y'::bpchar,
+  created timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  createdby integer NOT NULL,
+  updated timestamp without time zone NOT NULL DEFAULT ('now'::text)::timestamp(6) with time zone,
+  updatedby integer NOT NULL,
+  lo_orden_logistica_id integer NOT NULL,
+  c_bpartner_id integer NOT NULL,
+  CONSTRAINT lo_personal_logistica_key PRIMARY KEY (lo_personal_logistica_id),
+  CONSTRAINT loordenlogistica_lopersonallogistica FOREIGN KEY (lo_orden_logistica_id)
+      REFERENCES libertya.lo_orden_logistica (lo_orden_logistica_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,  
+  CONSTRAINT evpersonal_lopersonallogistica FOREIGN KEY (ev_personal_id)
+      REFERENCES libertya.ev_personal (ev_personal_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,  
+  CONSTRAINT adclient_lopersonallogistica FOREIGN KEY (ad_client_id)
+      REFERENCES libertya.ad_client (ad_client_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION,
+  CONSTRAINT adorg_lopersonallogistica FOREIGN KEY (ad_org_id)
+      REFERENCES libertya.ad_org (ad_org_id) MATCH SIMPLE
+      ON UPDATE NO ACTION ON DELETE NO ACTION
+)
+ALTER TABLE libertya.lo_personal_logistica OWNER TO libertya;
